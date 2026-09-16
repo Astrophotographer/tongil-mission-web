@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>통일탐방 미니</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="logo" href="#intro">통일탐방 미니</a>
+      <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="메뉴 열기">
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+      </button>
+      <nav id="site-nav" class="site-nav">
+        <ul>
+          <li><a href="#intro">소개</a></li>
+          <li><a href="#trip">탐방 추천</a></li>
+          <li><a href="#factcheck">팩트체크</a></li>
+          <li><a href="#faq">이용 안내</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section id="intro" class="section section-hero">
+      <div class="content-wrap">
+        <p class="eyebrow">통일교육 · 현장 탐방</p>
+        <h1>탐방 수업 초안과 팩트체크를 한곳에서</h1>
+        <p class="lead">
+          날짜·출발지·대상만 입력하면 AI가 탐방지와 수업안을 제안하고,
+          통일 관련 주장은 짧은 판정과 근거로 확인할 수 있습니다.
+        </p>
+        <div class="hero-cta">
+          <a class="btn btn-primary" href="#trip">탐방 AI 추천</a>
+          <a class="btn btn-secondary" href="#factcheck">팩트체크</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="trip" class="section">
+      <div class="content-wrap">
+        <h2>탐방 AI 추천</h2>
+        <p class="section-desc">탐방일과 일정을 입력하세요. (기능은 다음 단계에서 연결됩니다.)</p>
+        <form class="stack-form" id="trip-form" action="#" method="post">
+          <label for="date">탐방일</label>
+          <input type="date" id="date" name="date" required>
+
+          <label for="origin">출발지</label>
+          <input type="text" id="origin" name="origin" placeholder="예: 서울역" required>
+
+          <label for="schedule">일정</label>
+          <select id="schedule" name="schedule" required>
+            <option value="">선택</option>
+            <option value="half">반나절</option>
+            <option value="full">1일</option>
+            <option value="multi">1박 2일</option>
+          </select>
+
+          <label for="audience">대상</label>
+          <input type="text" id="audience" name="audience" placeholder="예: 중학교 2학년 30명" required>
+
+          <button type="submit" class="btn btn-primary" disabled>추천 받기 (준비 중)</button>
+        </form>
+        <div class="result-placeholder" id="trip-result" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section id="factcheck" class="section section-alt">
+      <div class="content-wrap">
+        <h2>팩트체크</h2>
+        <p class="section-desc">확인하고 싶은 주장이나 질문을 입력하세요.</p>
+        <form class="stack-form" id="factcheck-form" action="#" method="post">
+          <label for="question">질문 / 주장</label>
+          <textarea id="question" name="question" rows="4" placeholder="예: DMZ는 완전히 폐쇄된 구역이다." required></textarea>
+
+          <p class="example-label">예시 (클릭 시 입력)</p>
+          <div class="example-buttons">
+            <button type="button" class="btn btn-example" data-example="남북한은 아직 전쟁 중 상태이다.">
+              남북한은 아직 전쟁 중 상태이다.
+            </button>
+            <button type="button" class="btn btn-example" data-example="통일교육은 중·고등학교 필수 과목이다.">
+              통일교육은 중·고등학교 필수 과목이다.
+            </button>
+            <button type="button" class="btn btn-example" data-example="판문점은 남북한 모두의 영토 안에 있다.">
+              판문점은 남북한 모두의 영토 안에 있다.
+            </button>
+          </div>
+
+          <button type="submit" class="btn btn-primary" disabled>확인하기 (준비 중)</button>
+        </form>
+        <div class="result-placeholder" id="factcheck-result" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section id="faq" class="section">
+      <div class="content-wrap">
+        <h2>이용 안내</h2>
+        <dl class="faq-list">
+          <div class="faq-item">
+            <dt>API가 실패하면 어떻게 하나요?</dt>
+            <dd>
+              필수값이 비어 있으면 「필수값을 입력하세요」를, 서버·AI 오류나 타임아웃이면
+              「잠시 후 다시 시도하세요」를 안내합니다. 탐방 추천에서 주변 장소(Kakao)만
+              실패해도 탐방 본문은 표시됩니다.
+            </dd>
+          </div>
+          <div class="faq-item">
+            <dt>API 키는 어디에 두나요?</dt>
+            <dd>
+              Cody LLM과 Kakao Local 키는 Vercel 환경 변수 또는 로컬 <code>.env</code>에만
+              설정합니다. 저장소·브라우저·스크린샷에는 키를 넣지 마세요.
+              변수 이름은 <code>.env.example</code>을 참고하세요.
+            </dd>
+          </div>
+          <div class="faq-item">
+            <dt>사용 시 주의할 점은?</dt>
+            <dd>
+              AI 답변은 수업 준비 참고용이며, 최종 팩트는 공식 자료와 교육과정에 맞게
+              교사가 검토해야 합니다. 개인정보·민감 정보는 입력하지 마세요.
+            </dd>
+          </div>
+        </dl>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="content-wrap">
+      <p>통일탐방 미니 · 미션 제출용 데모</p>
+    </div>
+  </footer>
+
+  <script src="js/nav.js"></script>
+</body>
+</html>

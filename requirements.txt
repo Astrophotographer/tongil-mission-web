@@ -1,0 +1,2 @@
+# Vercel Python API uses stdlib only for HTTP.
+# Dev tests: pip install pytest
