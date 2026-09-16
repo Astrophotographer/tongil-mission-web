@@ -74,9 +74,9 @@
       <div class="content-wrap">
         <h2>팩트체크</h2>
         <p class="section-desc">확인하고 싶은 주장이나 질문을 입력하세요.</p>
-        <form class="stack-form" id="factcheck-form" action="#" method="post">
-          <label for="question">질문 / 주장</label>
-          <textarea id="question" name="question" rows="4" placeholder="예: DMZ는 완전히 폐쇄된 구역이다." required></textarea>
+        <form class="stack-form" id="fact-form" action="#" method="post">
+          <label for="fact-question">질문 / 주장</label>
+          <textarea id="fact-question" name="question" rows="4" placeholder="예: DMZ는 완전히 폐쇄된 구역이다." required></textarea>
 
           <p class="example-label">예시 (클릭 시 입력)</p>
           <div class="example-buttons">
@@ -91,9 +91,10 @@
             </button>
           </div>
 
-          <button type="submit" class="btn btn-primary" disabled>확인하기 (준비 중)</button>
+          <button type="submit" class="btn btn-primary" id="fact-submit">확인하기</button>
+          <p id="fact-status" aria-live="polite"></p>
         </form>
-        <div class="result-placeholder" id="factcheck-result" aria-live="polite"></div>
+        <div class="result-placeholder" id="fact-result" aria-live="polite"></div>
       </div>
     </section>
 
@@ -136,5 +137,6 @@
   </footer>
 
   <script src="js/nav.js"></script>
+  <script src="js/factcheck.js"></script>
 </body>
 </html>
