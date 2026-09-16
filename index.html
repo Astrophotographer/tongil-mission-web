@@ -45,8 +45,8 @@
     <section id="trip" class="section">
       <div class="content-wrap">
         <h2>탐방 AI 추천</h2>
-        <p class="section-desc">탐방일과 일정을 입력하세요. (기능은 다음 단계에서 연결됩니다.)</p>
-        <form class="stack-form" id="trip-form" action="#" method="post">
+        <p class="section-desc">탐방일과 일정을 입력하세요.</p>
+        <form class="stack-form" id="trip-form" action="#" method="post" novalidate>
           <label for="date">탐방일</label>
           <input type="date" id="date" name="date" required>
 
@@ -64,7 +64,8 @@
           <label for="audience">대상</label>
           <input type="text" id="audience" name="audience" placeholder="예: 중학교 2학년 30명" required>
 
-          <button type="submit" class="btn btn-primary" disabled>추천 받기 (준비 중)</button>
+          <button type="submit" class="btn btn-primary" id="trip-submit">추천 받기</button>
+          <p id="trip-status" aria-live="polite"></p>
         </form>
         <div class="result-placeholder" id="trip-result" aria-live="polite"></div>
       </div>
@@ -137,6 +138,7 @@
   </footer>
 
   <script src="js/nav.js"></script>
+  <script src="js/trip.js"></script>
   <script src="js/factcheck.js"></script>
 </body>
 </html>
