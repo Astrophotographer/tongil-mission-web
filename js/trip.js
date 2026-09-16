@@ -9,6 +9,7 @@
   var submitBtn = document.getElementById('trip-submit');
   var statusEl = document.getElementById('trip-status');
   var resultEl = document.getElementById('trip-result');
+  var inFlight = false;
 
   function setStatus(text) {
     if (statusEl) statusEl.textContent = text;
@@ -16,6 +17,12 @@
 
   function clearResult() {
     if (resultEl) resultEl.textContent = '';
+  }
+
+  function scheduleLabel() {
+    if (!scheduleEl || !scheduleEl.value) return '';
+    var opt = scheduleEl.options[scheduleEl.selectedIndex];
+    return (opt && opt.text ? opt.text : '').trim();
   }
 
   function appendHeading(parent, text) {
@@ -87,9 +94,11 @@
   }
 
   function runRecommend() {
+    if (inFlight) return;
+
     var date = (dateEl && dateEl.value ? dateEl.value : '').trim();
     var origin = (originEl && originEl.value ? originEl.value : '').trim();
-    var schedule = (scheduleEl && scheduleEl.value ? scheduleEl.value : '').trim();
+    var schedule = scheduleLabel();
     var audience = (audienceEl && audienceEl.value ? audienceEl.value : '').trim();
 
     if (!date || !origin || !schedule || !audience) {
@@ -100,6 +109,7 @@
 
     clearResult();
     setStatus('응답을 기다리는 중…');
+    inFlight = true;
     if (submitBtn) submitBtn.disabled = true;
 
     fetch('/api/trip_recommend', {
@@ -135,6 +145,7 @@
         clearResult();
       })
       .finally(function () {
+        inFlight = false;
         if (submitBtn) submitBtn.disabled = false;
       });
   }

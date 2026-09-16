@@ -61,7 +61,10 @@ class handler(BaseHTTPRequestHandler):
         user = _user_prompt(date, origin, schedule, audience)
         try:
             primary = self._primary_json(user)
-        except (LlmError, ValueError, json.JSONDecodeError, TypeError, KeyError):
+        except LlmError as e:
+            status = 503 if e.status in (None, 401, 403, 503) else 502
+            return self._json(status, {"ok": False, "error": "잠시 후 다시 시도하세요"})
+        except (ValueError, json.JSONDecodeError, TypeError, KeyError):
             return self._json(502, {"ok": False, "error": "잠시 후 다시 시도하세요"})
 
         places, kakao_err = search_kakao(primary["nearby_area"], size=5)
@@ -76,8 +79,9 @@ class handler(BaseHTTPRequestHandler):
                 json.dumps({"primary": primary, "places": places}, ensure_ascii=False),
             )
             report_markdown = strip_code_fence(report_markdown)
-        except LlmError:
-            return self._json(502, {"ok": False, "error": "잠시 후 다시 시도하세요"})
+        except LlmError as e:
+            status = 503 if e.status in (None, 401, 403, 503) else 502
+            return self._json(status, {"ok": False, "error": "잠시 후 다시 시도하세요"})
 
         return self._json(
             200,

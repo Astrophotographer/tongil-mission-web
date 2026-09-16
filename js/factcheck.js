@@ -6,6 +6,7 @@
   var submitBtn = document.getElementById('fact-submit');
   var statusEl = document.getElementById('fact-status');
   var resultEl = document.getElementById('fact-result');
+  var inFlight = false;
 
   function setStatus(text) {
     if (statusEl) statusEl.textContent = text;
@@ -16,6 +17,8 @@
   }
 
   function runCheck() {
+    if (inFlight) return;
+
     var question = (questionEl && questionEl.value ? questionEl.value : '').trim();
     if (!question) {
       setStatus('필수값을 입력하세요');
@@ -25,6 +28,7 @@
 
     clearResult();
     setStatus('응답을 기다리는 중…');
+    inFlight = true;
     if (submitBtn) submitBtn.disabled = true;
 
     fetch('/api/fact_check', {
@@ -55,6 +59,7 @@
         clearResult();
       })
       .finally(function () {
+        inFlight = false;
         if (submitBtn) submitBtn.disabled = false;
       });
   }
