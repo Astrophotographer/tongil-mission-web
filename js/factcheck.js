@@ -23,6 +23,7 @@
       return;
     }
 
+    clearResult();
     setStatus('응답을 기다리는 중…');
     if (submitBtn) submitBtn.disabled = true;
 
