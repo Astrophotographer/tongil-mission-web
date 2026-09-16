@@ -61,7 +61,10 @@ Vercel 프로젝트 설정 또는 로컬 `.env`에만 값을 넣습니다. READM
 
 `vercel.json`에서 `api/**/*.py`에 Python 3.12 런타임을 지정합니다.
 
-## 배포 URL
+## 배포
+
+- **GitHub:** https://github.com/Astrophotographer/tongil-mission-web
+- **Vercel URL:** (배포 후 기입 — `vercel login` 후 연동 필요) URL
 
 **(배포 후 기입)**
 
