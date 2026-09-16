@@ -5,3 +5,8 @@ __pycache__/
 *.pyc
 .DS_Store
 .vercel/
+
+node_modules/
+package/
+*.tgz
+.superpowers/
