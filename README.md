@@ -64,9 +64,8 @@ Vercel 프로젝트 설정 또는 로컬 `.env`에만 값을 넣습니다. READM
 ## 배포
 
 - **GitHub:** https://github.com/Astrophotographer/tongil-mission-web
-- **Vercel URL:** (배포 후 기입 — `vercel login` 후 연동 필요)
+- **Vercel URL:** https://tongil-mission-web-skcksdnr2-6055s-projects.vercel.app
 
-**(배포 후 기입)**
 
 ## 프로젝트 구조
 
