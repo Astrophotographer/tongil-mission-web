@@ -48,8 +48,16 @@ Vercel 프로젝트 설정 또는 로컬 `.env`에만 값을 넣습니다. READM
 | `LLM_MODEL` | 사용할 모델 ID |
 | `LLM_API_KEY` | LLM API 키 (서버 전용) |
 | `KAKAO_REST_API_KEY` | Kakao Local 키워드 장소 검색 (탐방 파이프라인) |
+| `WEBHOOK_URL` | (선택) AI·문의 결과를 받을 Zapier/Make/n8n 웹훅 |
 
 템플릿: [`.env.example`](.env.example)
+
+## 보너스 기능
+
+- **기록·연동:** 탐방·팩트체크·문의 결과를 브라우저에 저장하고, `WEBHOOK_URL`이 있으면 `/api/save_result`가 외부로 전달합니다.
+- **다크 모드:** 헤더 「다크/라이트」 토글
+- **마이크로 인터랙션:** 버튼·결과·섹션 등장 모션 (`prefers-reduced-motion` 시 축소)
+- **방문자 분석:** Vercel Web Analytics + 로컬 방문 횟수
 
 ## Vercel 배포
 
@@ -76,11 +84,15 @@ tongil-mission-web/
 │   └── styles.css
 ├── js/
 │   ├── nav.js
+│   ├── theme.js
+│   ├── history.js
+│   ├── ux.js
 │   ├── trip.js         # POST /api/trip_recommend
 │   └── factcheck.js    # POST /api/fact_check
 ├── api/
 │   ├── trip_recommend.py
 │   ├── fact_check.py
+│   ├── save_result.py  # 기록·웹훅
 │   ├── _llm.py
 │   ├── _kakao.py
 │   ├── _validate.py
@@ -101,6 +113,7 @@ tongil-mission-web/
 |--------|------|------|
 | POST | `/api/trip_recommend` | 탐방 추천 (LLM → Kakao → LLM) |
 | POST | `/api/fact_check` | 팩트체크 |
+| POST | `/api/save_result` | AI·문의 기록 + 선택적 웹훅 |
 
 ## 라이선스 / 미션
 

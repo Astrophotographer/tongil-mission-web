@@ -12,6 +12,21 @@
   --max-width: 42rem;
   --header-height: 3.25rem;
   --radius: 0.375rem;
+  --shadow-soft: 0 4px 12px rgb(26 46 40 / 8%);
+  --motion: 180ms ease;
+}
+
+[data-theme="dark"] {
+  --color-ink: #e6efe9;
+  --color-ink-muted: #a8bfb4;
+  --color-green-deep: #7dcea0;
+  --color-green: #5bb88a;
+  --color-green-light: #1a2f28;
+  --color-surface: #121a17;
+  --color-surface-alt: #1a2420;
+  --color-border: #2f423a;
+  --color-white: #18211d;
+  --shadow-soft: 0 4px 16px rgb(0 0 0 / 35%);
 }
 
 *,
@@ -31,6 +46,7 @@ body {
   line-height: 1.6;
   color: var(--color-ink);
   background: var(--color-surface);
+  transition: background-color var(--motion), color var(--motion);
 }
 
 .content-wrap {
@@ -66,6 +82,34 @@ body {
   font-size: 1.05rem;
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+
+.theme-toggle {
+  padding: 0.4rem 0.7rem;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-ink);
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: transform var(--motion), background-color var(--motion);
+}
+
+.theme-toggle:hover {
+  background: var(--color-green-light);
+}
+
+.theme-toggle:active {
+  transform: scale(0.96);
+}
+
 .nav-toggle {
   display: flex;
   flex-direction: column;
@@ -78,6 +122,11 @@ body {
   border-radius: var(--radius);
   background: var(--color-white);
   cursor: pointer;
+  transition: transform var(--motion);
+}
+
+.nav-toggle:active {
+  transform: scale(0.96);
 }
 
 .nav-toggle-bar {
@@ -137,6 +186,15 @@ body {
 
   .header-inner {
     gap: 1.5rem;
+  }
+
+  .header-actions {
+    order: 3;
+    margin-left: 0;
+  }
+
+  .site-nav {
+    margin-left: auto;
   }
 
   .site-nav ul {
@@ -258,6 +316,11 @@ body {
   border-radius: var(--radius);
   border: 2px solid transparent;
   cursor: pointer;
+  transition: transform var(--motion), background-color var(--motion), border-color var(--motion), box-shadow var(--motion);
+}
+
+.btn:active:not(:disabled) {
+  transform: translateY(1px) scale(0.98);
 }
 
 .btn-primary {
@@ -314,11 +377,6 @@ body {
   }
 }
 
-.result-placeholder {
-  min-height: 0;
-  padding: 0;
-}
-
 /* FAQ */
 .faq-list {
   margin: 0;
@@ -362,4 +420,111 @@ body {
 
 .site-footer p {
   margin: 0;
+}
+
+.visit-note {
+  margin: 1.25rem 0 0;
+  font-size: 0.85rem;
+  color: var(--color-ink-muted);
+}
+
+.status-line {
+  min-height: 1.25rem;
+  transition: opacity var(--motion);
+}
+
+.result-placeholder {
+  min-height: 0;
+  padding: 0;
+  transition: opacity var(--motion);
+}
+
+.result-placeholder:not(:empty) {
+  margin-top: 0.5rem;
+  padding: 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-white);
+  animation: result-in 280ms ease;
+}
+
+@keyframes result-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.section.reveal {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 420ms ease, transform 420ms ease;
+}
+
+.section.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+.history-list {
+  list-style: none;
+  margin: 1rem 0 0;
+  padding: 0;
+}
+
+.history-item {
+  padding: 0.9rem 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.history-item strong {
+  display: block;
+  color: var(--color-green-deep);
+}
+
+.history-item time {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--color-ink-muted);
+  margin: 0.15rem 0 0.35rem;
+}
+
+.history-item p {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--color-ink-muted);
+  white-space: pre-wrap;
+}
+
+.history-empty {
+  margin: 1rem 0 0;
+  color: var(--color-ink-muted);
+}
+
+.inquiry-heading {
+  margin: 2rem 0 0.75rem;
+  font-size: 1.15rem;
+  color: var(--color-green-deep);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .section.reveal {
+    opacity: 1;
+    transform: none;
+  }
 }

@@ -53,6 +53,13 @@
         if (resultEl && data.result) {
           resultEl.textContent = data.result.answer || '';
         }
+        if (window.TongilHistory) {
+          window.TongilHistory.add(
+            'fact_check',
+            question,
+            (data.result && data.result.answer) || ''
+          );
+        }
       })
       .catch(function () {
         setStatus('잠시 후 다시 시도하세요');

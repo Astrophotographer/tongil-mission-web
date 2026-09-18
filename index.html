@@ -4,22 +4,28 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>통일탐방 미니</title>
+  <script src="js/theme.js"></script>
   <link rel="stylesheet" href="css/styles.css">
+  <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
   <header class="site-header">
     <div class="header-inner">
       <a class="logo" href="#intro">통일탐방 미니</a>
-      <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="메뉴 열기">
-        <span class="nav-toggle-bar"></span>
-        <span class="nav-toggle-bar"></span>
-        <span class="nav-toggle-bar"></span>
-      </button>
+      <div class="header-actions">
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-pressed="false" aria-label="다크 모드로 전환">다크</button>
+        <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="메뉴 열기">
+          <span class="nav-toggle-bar"></span>
+          <span class="nav-toggle-bar"></span>
+          <span class="nav-toggle-bar"></span>
+        </button>
+      </div>
       <nav id="site-nav" class="site-nav">
         <ul>
           <li><a href="#intro">소개</a></li>
           <li><a href="#trip">탐방 추천</a></li>
           <li><a href="#factcheck">팩트체크</a></li>
+          <li><a href="#history">기록</a></li>
           <li><a href="#faq">이용 안내</a></li>
         </ul>
       </nav>
@@ -39,6 +45,7 @@
           <a class="btn btn-primary" href="#trip">탐방 AI 추천</a>
           <a class="btn btn-secondary" href="#factcheck">팩트체크</a>
         </div>
+        <p class="visit-note">이 브라우저 방문 횟수: <span id="visit-count">0</span></p>
       </div>
     </section>
 
@@ -65,7 +72,7 @@
           <input type="text" id="audience" name="audience" placeholder="예: 중학교 2학년 30명" required>
 
           <button type="submit" class="btn btn-primary" id="trip-submit">추천 받기</button>
-          <p id="trip-status" aria-live="polite"></p>
+          <p id="trip-status" class="status-line" aria-live="polite"></p>
         </form>
         <div class="result-placeholder" id="trip-result" aria-live="polite"></div>
       </div>
@@ -93,13 +100,35 @@
           </div>
 
           <button type="submit" class="btn btn-primary" id="fact-submit">확인하기</button>
-          <p id="fact-status" aria-live="polite"></p>
+          <p id="fact-status" class="status-line" aria-live="polite"></p>
         </form>
         <div class="result-placeholder" id="fact-result" aria-live="polite"></div>
       </div>
     </section>
 
-    <section id="faq" class="section">
+    <section id="history" class="section">
+      <div class="content-wrap">
+        <h2>최근 기록</h2>
+        <p class="section-desc">
+          AI 결과와 문의는 이 브라우저에 저장되고, 설정된 경우 웹훅으로도 전달됩니다.
+        </p>
+        <button type="button" class="btn btn-secondary" id="history-clear">기록 지우기</button>
+        <p id="history-empty" class="history-empty">아직 기록이 없습니다.</p>
+        <ul id="history-list" class="history-list"></ul>
+
+        <h3 class="inquiry-heading">간단 문의</h3>
+        <form class="stack-form" id="inquiry-form" novalidate>
+          <label for="inquiry-name">이름(또는 별칭)</label>
+          <input type="text" id="inquiry-name" name="name" required>
+          <label for="inquiry-message">메시지</label>
+          <textarea id="inquiry-message" name="message" rows="3" required></textarea>
+          <button type="submit" class="btn btn-primary">문의 남기기</button>
+          <p id="inquiry-status" class="status-line" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+
+    <section id="faq" class="section section-alt">
       <div class="content-wrap">
         <h2>이용 안내</h2>
         <dl class="faq-list">
@@ -117,6 +146,13 @@
               Cody LLM과 Kakao Local 키는 Vercel 환경 변수 또는 로컬 <code>.env</code>에만
               설정합니다. 저장소·브라우저·스크린샷에는 키를 넣지 마세요.
               변수 이름은 <code>.env.example</code>을 참고하세요.
+            </dd>
+          </div>
+          <div class="faq-item">
+            <dt>보너스 기능은 무엇이 있나요?</dt>
+            <dd>
+              다크 모드, 섹션 등장 애니메이션, Vercel Web Analytics·로컬 방문 횟수,
+              AI/문의 결과의 로컬 기록과 선택적 <code>WEBHOOK_URL</code> 알림이 포함됩니다.
             </dd>
           </div>
           <div class="faq-item">
@@ -138,6 +174,8 @@
   </footer>
 
   <script src="js/nav.js"></script>
+  <script src="js/history.js"></script>
+  <script src="js/ux.js"></script>
   <script src="js/trip.js"></script>
   <script src="js/factcheck.js"></script>
 </body>

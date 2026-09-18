@@ -139,6 +139,17 @@
         var warnings = result.warnings || [];
         setStatus(warnings.length ? warnings.join(' ') : '');
         renderResult(result);
+        if (window.TongilHistory) {
+          var site = (result.primary && result.primary.recommended_site) || '';
+          var summary = site
+            ? '추천: ' + site
+            : (result.report_markdown || '').slice(0, 200);
+          window.TongilHistory.add(
+            'trip',
+            [date, origin, schedule, audience].join(' / '),
+            summary
+          );
+        }
       })
       .catch(function () {
         setStatus('잠시 후 다시 시도하세요');
