@@ -74,6 +74,14 @@ Vercel 프로젝트 설정 또는 로컬 `.env`에만 값을 넣습니다. READM
 - **GitHub:** https://github.com/Astrophotographer/tongil-mission-web
 - **Vercel URL:** https://tongil-mission-web-skcksdnr2-6055s-projects.vercel.app
 
+## 제출 증빙
+
+| 파일 | 내용 |
+|------|------|
+| [`images/desktop-home.png`](images/desktop-home.png) | 데스크톱 홈 |
+| [`images/mobile-home.png`](images/mobile-home.png) | 모바일 홈 |
+| [`images/ai-factcheck.png`](images/ai-factcheck.png) | AI 팩트체크 동작 |
+| [`docs/evidence.md`](docs/evidence.md) | AI 코딩 도구 사용 과정 요약 |
 
 ## 프로젝트 구조
 
