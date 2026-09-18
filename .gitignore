@@ -10,3 +10,5 @@ node_modules/
 package/
 *.tgz
 .superpowers/
+.vercel
+.env*
