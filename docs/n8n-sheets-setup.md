@@ -29,7 +29,8 @@ Google Sheets 새 문서 만들고, 시트 이름을 `기록`으로 둡니다.
    - Sheet 이름: `기록`
 3. **Webhook** 노드 활성화(Active)
 4. Production URL(또는 Test URL)을 복사  
-   예: `https://YOUR_N8N/webhook/tongil-mission-save`
+   예: `https://n8n.chanuk.aigraphers.com/webhook/tongil-mission-save`  
+   (이 프로젝트 인스턴스: https://n8n.chanuk.aigraphers.com )
 
 ## 3. Vercel 환경 변수
 

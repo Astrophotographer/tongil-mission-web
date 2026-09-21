@@ -11,41 +11,38 @@
       "id": "webhook-tongil",
       "name": "Webhook",
       "type": "n8n-nodes-base.webhook",
-      "typeVersion": 2,
-      "position": [260, 300],
+      "typeVersion": 2.1,
+      "position": [
+        260,
+        300
+      ],
       "webhookId": "tongil-mission-save"
     },
     {
       "parameters": {
-        "operation": "append",
-        "documentId": {
-          "__rl": true,
-          "mode": "id",
-          "value": "1rDj4q5y8z5rS1UO6TH7huiSfVWcW-JTFMmA3fC82D9Q"
-        },
-        "sheetName": {
-          "__rl": true,
-          "mode": "name",
-          "value": "기록"
-        },
-        "columns": {
-          "mappingMode": "defineBelow",
-          "value": {
-            "recorded_at_kr": "={{ $json.recorded_at_kr }}",
-            "kind_label": "={{ $json.kind_label }}",
-            "kind": "={{ $json.kind }}",
-            "input": "={{ $json.input }}",
-            "summary": "={{ $json.summary }}",
-            "source": "={{ $json.source }}"
-          }
-        },
+        "method": "POST",
+        "url": "=https://sheets.googleapis.com/v4/spreadsheets/1rDj4q5y8z5rS1UO6TH7huiSfVWcW-JTFMmA3fC82D9Q/values/%EA%B8%B0%EB%A1%9D!A:F:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleSheetsOAuth2Api",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ values: [[$json.recorded_at_kr, $json.kind_label, $json.kind, $json.input, $json.summary, $json.source]] }) }}",
         "options": {}
       },
-      "id": "sheets-append",
-      "name": "Google Sheets",
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.5,
-      "position": [520, 300]
+      "id": "http-sheets-append",
+      "name": "Sheets Append HTTP",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        520,
+        300
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "pW6CTqVeBi6zwwqL",
+          "name": "Google Sheets account"
+        }
+      }
     }
   ],
   "connections": {
@@ -53,7 +50,7 @@
       "main": [
         [
           {
-            "node": "Google Sheets",
+            "node": "Sheets Append HTTP",
             "type": "main",
             "index": 0
           }
@@ -62,9 +59,8 @@
     }
   },
   "settings": {
-    "executionOrder": "v1"
-  },
-  "meta": {
-    "templateCredsSetupCompleted": false
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
   }
 }
