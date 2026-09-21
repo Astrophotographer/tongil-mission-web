@@ -47,7 +47,8 @@ Vercel 프로젝트 설정 또는 로컬 `.env`에만 값을 넣습니다. READM
 | `LLM_BASE_URL` | OpenAI 호환 API 베이스 URL |
 | `LLM_MODEL` | 사용할 모델 ID |
 | `LLM_API_KEY` | LLM API 키 (서버 전용) |
-| `KAKAO_REST_API_KEY` | Kakao Local 키워드 장소 검색 (탐방 파이프라인) |
+| `KAKAO_REST_API_KEY` | Kakao Local 장소 검색·경로(내비) |
+| `KAKAO_JS_KEY` | Kakao Maps JavaScript 키 (지도 표시, 도메인 등록 필요) |
 | `WEBHOOK_URL` | (선택) AI·문의 결과를 받을 Zapier/Make/n8n 웹훅 |
 
 템플릿: [`.env.example`](.env.example)
@@ -119,9 +120,10 @@ tongil-mission-web/
 
 | 메서드 | 경로 | 설명 |
 |--------|------|------|
-| POST | `/api/trip_recommend` | 탐방 추천 (LLM → Kakao → LLM) |
+| POST | `/api/trip_recommend` | 탐방 추천 (LLM → Kakao → 경로 → LLM) |
 | POST | `/api/fact_check` | 팩트체크 |
 | POST | `/api/save_result` | AI·문의 기록 + 선택적 웹훅 |
+| GET | `/api/public_config` | 프론트용 `kakaoJsKey` |
 
 ## 라이선스 / 미션
 

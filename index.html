@@ -60,6 +60,9 @@
           <label for="origin">출발지</label>
           <input type="text" id="origin" name="origin" placeholder="예: 서울역" required>
 
+          <label for="destination">도착지</label>
+          <input type="text" id="destination" name="destination" placeholder="예: 파주 / 임진각" required>
+
           <label for="schedule">일정</label>
           <select id="schedule" name="schedule" required>
             <option value="">선택</option>
@@ -74,6 +77,11 @@
           <button type="submit" class="btn btn-primary" id="trip-submit">추천 받기</button>
           <p id="trip-status" class="status-line" aria-live="polite"></p>
         </form>
+        <div id="trip-map" class="trip-map" hidden aria-label="탐방 경로 지도"></div>
+        <p id="trip-map-note" class="trip-map-note" hidden></p>
+        <p class="trip-map-actions">
+          <a id="trip-map-link" class="btn btn-secondary" href="#" target="_blank" rel="noopener noreferrer" hidden>카카오맵에서 경로 열기</a>
+        </p>
         <div class="result-placeholder" id="trip-result" aria-live="polite"></div>
       </div>
     </section>
@@ -176,6 +184,7 @@
   <script src="js/nav.js"></script>
   <script src="js/history.js"></script>
   <script src="js/ux.js"></script>
+  <script src="js/trip-map.js"></script>
   <script src="js/trip.js"></script>
   <script src="js/factcheck.js"></script>
 </body>

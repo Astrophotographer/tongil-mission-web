@@ -7,9 +7,13 @@ def test_map_document():
         "place_name": "임진각",
         "road_address_name": "경기 파주시",
         "category_name": "여행 > 관광",
+        "x": "126.74",
+        "y": "37.88",
     })
     assert item["name"] == "임진각"
     assert "파주" in item["address"]
+    assert item["lng"] == 126.74
+    assert item["lat"] == 37.88
 
 def test_search_kakao_maps_documents(monkeypatch):
     monkeypatch.setenv("KAKAO_REST_API_KEY", "test-key")

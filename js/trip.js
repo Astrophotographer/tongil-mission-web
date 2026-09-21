@@ -4,19 +4,30 @@
 
   var dateEl = document.getElementById('date');
   var originEl = document.getElementById('origin');
+  var destinationEl = document.getElementById('destination');
   var scheduleEl = document.getElementById('schedule');
   var audienceEl = document.getElementById('audience');
   var submitBtn = document.getElementById('trip-submit');
   var statusEl = document.getElementById('trip-status');
   var resultEl = document.getElementById('trip-result');
+  var mapLinkEl = document.getElementById('trip-map-link');
   var inFlight = false;
 
   function setStatus(text) {
     if (statusEl) statusEl.textContent = text;
   }
 
-  function clearResult() {
+  function clearResultText() {
     if (resultEl) resultEl.textContent = '';
+  }
+
+  function clearResult() {
+    clearResultText();
+    if (window.TongilTripMap) window.TongilTripMap.clear();
+    if (mapLinkEl) {
+      mapLinkEl.hidden = true;
+      mapLinkEl.removeAttribute('href');
+    }
   }
 
   function scheduleLabel() {
@@ -45,7 +56,11 @@
 
   function renderResult(data) {
     if (!resultEl || !data) return;
-    clearResult();
+    clearResultText();
+    if (mapLinkEl) {
+      mapLinkEl.hidden = true;
+      mapLinkEl.removeAttribute('href');
+    }
 
     var primary = data.primary || {};
     var fragment = document.createDocumentFragment();
@@ -91,6 +106,16 @@
     }
 
     resultEl.appendChild(fragment);
+
+    var route = data.route || null;
+    if (window.TongilTripMap) {
+      window.TongilTripMap.renderRoute(route);
+      var href = window.TongilTripMap.externalLink(route);
+      if (mapLinkEl && href) {
+        mapLinkEl.href = href;
+        mapLinkEl.hidden = false;
+      }
+    }
   }
 
   function runRecommend() {
@@ -98,10 +123,11 @@
 
     var date = (dateEl && dateEl.value ? dateEl.value : '').trim();
     var origin = (originEl && originEl.value ? originEl.value : '').trim();
+    var destination = (destinationEl && destinationEl.value ? destinationEl.value : '').trim();
     var schedule = scheduleLabel();
     var audience = (audienceEl && audienceEl.value ? audienceEl.value : '').trim();
 
-    if (!date || !origin || !schedule || !audience) {
+    if (!date || !origin || !destination || !schedule || !audience) {
       setStatus('필수값을 입력하세요');
       clearResult();
       return;
@@ -118,6 +144,7 @@
       body: JSON.stringify({
         date: date,
         origin: origin,
+        destination: destination,
         schedule: schedule,
         audience: audience,
       }),
@@ -146,7 +173,7 @@
             : (result.report_markdown || '').slice(0, 200);
           window.TongilHistory.add(
             'trip',
-            [date, origin, schedule, audience].join(' / '),
+            [date, origin, '→', destination, schedule, audience].join(' '),
             summary
           );
         }

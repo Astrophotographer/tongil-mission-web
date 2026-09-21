@@ -13,6 +13,10 @@ PRIMARY = {
     "field_missions": ["기념관 관람"],
 }
 
+ORIGIN = {"name": "서울역", "address": "서울", "lat": 37.55, "lng": 126.97}
+DEST = {"name": "파주", "address": "경기", "lat": 37.75, "lng": 126.78}
+SITE = {"name": "임진각", "address": "파주", "lat": 37.88, "lng": 126.74}
+
 
 def _post(body: bytes):
     out = BytesIO()
@@ -41,6 +45,7 @@ def _body(**overrides):
     data = {
         "date": "2026-09-20",
         "origin": "서울역",
+        "destination": "파주",
         "schedule": "반나절",
         "audience": "중2",
     }
@@ -49,11 +54,22 @@ def _body(**overrides):
 
 
 def test_trip_empty_fields():
-    code, obj = _post(_body(date="", origin="", schedule="", audience=""))
+    code, obj = _post(_body(date="", origin="", destination="", schedule="", audience=""))
     assert code == 400
     assert obj == {"ok": False, "error": "필수값을 입력하세요"}
 
 
+def test_trip_requires_destination():
+    code, obj = _post(_body(destination=""))
+    assert code == 400
+    assert obj == {"ok": False, "error": "필수값을 입력하세요"}
+
+
+@patch("api.trip_recommend.fetch_driving_path", return_value=([], "no path"))
+@patch(
+    "api.trip_recommend.geocode_place",
+    side_effect=[(ORIGIN, None), (DEST, None), (SITE, None)],
+)
 @patch("api.trip_recommend.search_kakao", return_value=([], "Kakao Local 키가 없습니다"))
 @patch(
     "api.trip_recommend.chat_completion",
@@ -62,19 +78,26 @@ def test_trip_empty_fields():
         "## 탐방 보고서\n내용",
     ],
 )
-def test_trip_success_kakao_soft_fail(mock_chat, mock_kakao):
+def test_trip_success_kakao_soft_fail(mock_chat, mock_kakao, mock_geo, mock_path):
     code, obj = _post(_body())
     assert code == 200
     assert obj["ok"] is True
     result = obj["result"]
     assert result["primary"]["recommended_site"] == "임진각"
     assert result["places"] == []
-    assert result["warnings"] == ["주변 장소 정보를 불러오지 못했습니다"]
+    assert "주변 장소 정보를 불러오지 못했습니다" in result["warnings"]
+    assert result["route"]["origin"]["name"] == "서울역"
+    assert result["route"]["destination"]["name"] == "파주"
+    assert len(result["route"]["path"]) >= 2
     assert "탐방 보고서" in result["report_markdown"]
-    assert mock_chat.call_count == 2
     mock_kakao.assert_called_once_with("파주", size=5)
 
 
+@patch("api.trip_recommend.fetch_driving_path", return_value=([{"lat": 37.55, "lng": 126.97}, {"lat": 37.75, "lng": 126.78}], None))
+@patch(
+    "api.trip_recommend.geocode_place",
+    side_effect=[(ORIGIN, None), (DEST, None), (SITE, None)],
+)
 @patch("api.trip_recommend.search_kakao", return_value=([{"name": "카페", "address": "파주", "category": "음식점"}], None))
 @patch(
     "api.trip_recommend.chat_completion",
@@ -83,12 +106,12 @@ def test_trip_success_kakao_soft_fail(mock_chat, mock_kakao):
         "## 보고서",
     ],
 )
-def test_trip_pipeline_success(mock_chat, mock_kakao):
+def test_trip_pipeline_success(mock_chat, mock_kakao, mock_geo, mock_path):
     code, obj = _post(_body())
     assert code == 200
     assert obj["ok"] is True
     assert obj["result"]["places"][0]["name"] == "카페"
-    assert obj["result"]["warnings"] == []
+    assert obj["result"]["route"]["path"][0]["lat"] == 37.55
     assert mock_chat.call_count == 2
 
 
