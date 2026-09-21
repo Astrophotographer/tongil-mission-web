@@ -1,4 +1,5 @@
 from http.server import BaseHTTPRequestHandler
+from datetime import datetime, timezone
 import json
 import os
 import urllib.error
@@ -9,9 +10,15 @@ try:
 except ImportError:
     from api._validate import require_nonempty
 
+KIND_LABELS = {
+    "fact_check": "팩트체크",
+    "trip": "탐방추천",
+    "inquiry": "문의",
+}
+
 
 def _forward_webhook(payload: dict) -> str | None:
-    """POST payload to WEBHOOK_URL if set. Returns error message or None."""
+    """POST payload to WEBHOOK_URL (n8n 등). Returns error message or None."""
     url = (os.environ.get("WEBHOOK_URL") or "").strip()
     if not url:
         return None
@@ -31,6 +38,20 @@ def _forward_webhook(payload: dict) -> str | None:
     except urllib.error.URLError:
         return "webhook network error"
     return None
+
+
+def build_sheet_payload(kind: str, summary: str, input_text: str) -> dict:
+    """n8n → Google Sheets 행에 맞춘 평탄한 필드."""
+    now = datetime.now(timezone.utc).astimezone()
+    return {
+        "recorded_at": now.isoformat(timespec="seconds"),
+        "recorded_at_kr": now.strftime("%Y-%m-%d %H:%M:%S"),
+        "kind": kind,
+        "kind_label": KIND_LABELS.get(kind, kind),
+        "input": input_text[:2000],
+        "summary": summary[:4000],
+        "source": "tongil-mission-web",
+    }
 
 
 class handler(BaseHTTPRequestHandler):
@@ -58,22 +79,23 @@ class handler(BaseHTTPRequestHandler):
         if kind not in ("fact_check", "trip", "inquiry"):
             return self._json(400, {"ok": False, "error": "잘못된 요청입니다"})
 
-        payload = {
-            "kind": kind,
-            "summary": summary[:4000],
-            "input": (body.get("input") or "")[:2000],
-            "source": "tongil-mission-web",
-        }
+        payload = build_sheet_payload(
+            kind, summary, (body.get("input") or "").strip()
+        )
         webhook_error = _forward_webhook(payload)
+        has_url = bool((os.environ.get("WEBHOOK_URL") or "").strip())
+        webhook_status = (
+            "sent"
+            if has_url and not webhook_error
+            else ("skipped" if not has_url else "failed")
+        )
         return self._json(
             200,
             {
                 "ok": True,
                 "result": {
                     "saved": True,
-                    "webhook": "sent" if (os.environ.get("WEBHOOK_URL") or "").strip() and not webhook_error else (
-                        "skipped" if not (os.environ.get("WEBHOOK_URL") or "").strip() else "failed"
-                    ),
+                    "webhook": webhook_status,
                     "webhook_error": webhook_error,
                 },
             },

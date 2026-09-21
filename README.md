@@ -49,13 +49,14 @@ Vercel 프로젝트 설정 또는 로컬 `.env`에만 값을 넣습니다. READM
 | `LLM_API_KEY` | LLM API 키 (서버 전용) |
 | `KAKAO_REST_API_KEY` | Kakao Local 장소 검색·경로(내비) |
 | `KAKAO_JS_KEY` | Kakao Maps JavaScript 키 (지도 표시, 도메인 등록 필요) |
-| `WEBHOOK_URL` | (선택) AI·문의 결과를 받을 Zapier/Make/n8n 웹훅 |
+| `WEBHOOK_URL` | (선택) n8n Webhook URL — Google Sheets 저장 |
 
 템플릿: [`.env.example`](.env.example)
 
 ## 보너스 기능
 
-- **기록·연동:** 탐방·팩트체크·문의 결과를 브라우저에 저장하고, `WEBHOOK_URL`이 있으면 `/api/save_result`가 외부로 전달합니다.
+- **기록·연동:** 탐방·팩트체크·문의 → 브라우저 기록 + n8n Webhook → **Google 스프레드시트**  
+  설정: [`docs/n8n-sheets-setup.md`](docs/n8n-sheets-setup.md) · 워크플로: [`docs/n8n-tongil-to-sheets.json`](docs/n8n-tongil-to-sheets.json)
 - **다크 모드:** 헤더 「다크/라이트」 토글
 - **마이크로 인터랙션:** 버튼·결과·섹션 등장 모션 (`prefers-reduced-motion` 시 축소)
 - **방문자 분석:** Vercel Web Analytics + 로컬 방문 횟수

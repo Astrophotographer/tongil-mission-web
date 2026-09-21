@@ -1,0 +1,70 @@
+{
+  "name": "통일탐방 미니 → Google Sheets",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "tongil-mission-save",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "webhook-tongil",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [260, 300],
+      "webhookId": "tongil-mission-save"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "YOUR_GOOGLE_SHEET_ID"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "기록"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "recorded_at_kr": "={{ $json.recorded_at_kr }}",
+            "kind_label": "={{ $json.kind_label }}",
+            "kind": "={{ $json.kind }}",
+            "input": "={{ $json.input }}",
+            "summary": "={{ $json.summary }}",
+            "source": "={{ $json.source }}"
+          }
+        },
+        "options": {}
+      },
+      "id": "sheets-append",
+      "name": "Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [520, 300]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false
+  }
+}

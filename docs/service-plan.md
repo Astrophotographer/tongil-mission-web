@@ -121,7 +121,7 @@
 
 | 항목 | 내용 |
 |------|------|
-| 기록·연동 | AI 결과·문의 → 브라우저 `localStorage` + `POST /api/save_result` (선택 `WEBHOOK_URL`로 노코드 알림) |
+| 기록·연동 | AI 결과·문의 → `localStorage` + n8n Webhook(`WEBHOOK_URL`) → Google Sheets (`docs/n8n-sheets-setup.md`) |
 | 다크 모드 | 헤더 토글, 선택값 저장, OS 선호 반영 |
 | 마이크로 인터랙션 | 버튼 눌림, 결과 등장, 섹션 스크롤 페이드 (`prefers-reduced-motion` 존중) |
 | 방문자 측정 | Vercel Web Analytics 스크립트 + 로컬 방문 횟수 표시 |
