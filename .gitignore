@@ -12,3 +12,4 @@ package/
 .superpowers/
 .vercel
 .env*
+.secrets/

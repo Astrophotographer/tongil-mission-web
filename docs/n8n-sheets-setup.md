@@ -15,7 +15,9 @@ Google Sheets 새 문서 만들고, 시트 이름을 `기록`으로 둡니다.
 | recorded_at_kr | kind_label | kind | input | summary | source |
 |----------------|------------|------|-------|---------|--------|
 
-스프레드시트 URL의 `/d/`와 `/edit` 사이 문자열이 **시트 ID**입니다.
+스프레드시트 URL의 `/d/`와 `/edit` 사이 문자열이 **시트 ID**입니다.  
+이 프로젝트 기본 시트 ID(문서에 연결용): `1rDj4q5y8z5rS1UO6TH7huiSfVWcW-JTFMmA3fC82D9Q`  
+(`docs/n8n-tongil-to-sheets.json` Document ID에 반영됨)
 
 ## 2. n8n 워크플로
 

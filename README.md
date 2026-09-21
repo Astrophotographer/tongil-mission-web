@@ -53,6 +53,10 @@ Vercel 프로젝트 설정 또는 로컬 `.env`에만 값을 넣습니다. READM
 
 템플릿: [`.env.example`](.env.example)
 
+키 유출 시: [`docs/service-plan.md`](docs/service-plan.md) **§10 API 키 유출 대응 절차** (폐기·재발 방지·로그 조사).
+
+상세 설계(지연 개선·프레임워크 비교 포함): [`docs/service-plan.md`](docs/service-plan.md) §9–§11.
+
 ## 보너스 기능
 
 - **기록·연동:** 탐방·팩트체크·문의 → 브라우저 기록 + n8n Webhook → **Google 스프레드시트**  
@@ -71,10 +75,47 @@ Vercel 프로젝트 설정 또는 로컬 `.env`에만 값을 넣습니다. READM
 
 `vercel.json`에서 `api/**/*.py`에 Python 3.12 런타임을 지정합니다.
 
+### 배포 실패 진단
+
+배포가 실패하거나 배포 후 API만 깨질 때 아래 순서로 확인합니다.
+
+#### 로그 위치
+
+| 어디서 | 무엇을 보나 |
+|--------|-------------|
+| [Vercel Dashboard](https://vercel.com) → 프로젝트 → **Deployments** → 해당 배포 | Build / Runtime 상태, **Building** 로그 |
+| 같은 배포 → **Functions** / **Runtime Logs** | `/api/trip_recommend`, `/api/fact_check` 등 Serverless 실행 로그·스택 |
+| 브라우저 **개발자 도구 → Console / Network** | `POST /api/...` 상태코드, 응답 JSON의 `error` |
+| 로컬 CLI | `npx vercel logs <deployment-url>` 또는 `npx vercel inspect <url> --logs` |
+
+#### 콘솔·로그 출력 예시
+
+```text
+# Build 실패 예 (Deployments → Building)
+Error: Function Runtimes must have valid version (was python3.x ...)
+→ vercel.json 의 Python runtime / excludeFiles 확인 후 재배포
+
+# Runtime 예 (Functions 로그)
+LLM이 설정되지 않았습니다
+→ Environment Variables 에 LLM_BASE_URL / LLM_MODEL / LLM_API_KEY 누락
+
+# 브라우저 Network
+POST /api/fact_check  →  503  {"ok":false,"error":"..."}
+→ Vercel 환경 변수·외부 LLM 도달 여부 확인
+```
+
+#### 재배포 체크리스트
+
+1. **빌드 로그**에 빨간 Error가 없는지 확인 (runtime·의존성·경로)
+2. **Environment Variables** — `LLM_*`, `KAKAO_REST_API_KEY`가 Production(필요 시 Preview)에 있는지, 이름 오타 없는지
+3. GitHub `main` 최신 커밋이 배포 대상인지 확인 후 **Redeploy** (또는 `npx vercel deploy --prod`)
+4. 배포 Ready 후 사이트에서 탐방·팩트체크 각 1회 호출 → Network에서 200/`ok: true` 확인
+5. 계속 실패하면 Runtime Logs의 시각과 브라우저 요청 시각을 맞춰 원인(키·타임아웃·Kakao)을 좁힘
+
 ## 배포
 
 - **GitHub:** https://github.com/Astrophotographer/tongil-mission-web
-- **Vercel URL:** https://tongil-mission-web-skcksdnr2-6055s-projects.vercel.app
+- **Vercel URL:** https://tongil-mission-web.vercel.app
 
 ## 제출 증빙
 
