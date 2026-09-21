@@ -11,6 +11,11 @@ PRIMARY = {
     "reason": "분단의 상징",
     "learning_goals": ["분단 이해"],
     "field_missions": ["기념관 관람"],
+    "timeline": [
+        {"time": "09:00", "place": "서울역", "activity": "집결·출발"},
+        {"time": "10:30", "place": "임진각", "activity": "평화 곤돌라·전망"},
+        {"time": "12:00", "place": "임진각 일대", "activity": "점심·정리"},
+    ],
 }
 
 ORIGIN = {"name": "서울역", "address": "서울", "lat": 37.55, "lng": 126.97}

@@ -48,8 +48,8 @@
   }
 
   function labelFor(kind) {
-    if (kind === 'fact_check') return '팩트체크';
-    if (kind === 'trip') return '탐방 추천';
+    if (kind === 'fact_check') return '팩트체크(검색)';
+    if (kind === 'trip') return '탐방 추천(검색)';
     if (kind === 'inquiry') return '문의';
     return kind || '기록';
   }

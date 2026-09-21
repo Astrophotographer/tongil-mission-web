@@ -448,6 +448,16 @@ body {
   animation: result-in 280ms ease;
 }
 
+.trip-timeline {
+  margin: 0.5rem 0 1rem;
+  padding-left: 1.25rem;
+}
+
+.trip-timeline li {
+  margin: 0.35rem 0;
+  line-height: 1.45;
+}
+
 @keyframes result-in {
   from {
     opacity: 0;

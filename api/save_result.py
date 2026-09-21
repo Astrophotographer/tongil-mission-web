@@ -11,8 +11,8 @@ except ImportError:
     from api._validate import require_nonempty
 
 KIND_LABELS = {
-    "fact_check": "팩트체크",
-    "trip": "탐방추천",
+    "fact_check": "팩트체크(검색)",
+    "trip": "탐방추천(검색)",
     "inquiry": "문의",
 }
 

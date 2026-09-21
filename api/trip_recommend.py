@@ -14,24 +14,28 @@ except ImportError:
 
 PRIMARY_SYSTEM = """당신은 통일교육 탐방 코스 추천기입니다.
 오직 JSON 객체만 출력하세요. 마크다운·설명 금지.
-스키마: {"recommended_site":"string","nearby_area":"string","reason":"string","learning_goals":["string"],"field_missions":["string"]}
+스키마: {"recommended_site":"string","nearby_area":"string","reason":"string","learning_goals":["string"],"field_missions":["string"],"timeline":[{"time":"HH:MM","place":"string","activity":"string"}]}
 recommended_site는 탐방 장소, nearby_area는 카카오 검색용 지역명입니다.
+timeline은 시간대별 탐방 코스(최소 3칸). 일정 길이에 맞게 구성하세요.
+- 반나절: 약 4~6개 구간
+- 1일: 약 6~9개 구간
+- 1박 2일: 이틀에 걸쳐 8개 이상(예: 1일차/2일차를 activity에 표기)
 사용자의 도착지(도착 도시/권역) 일대에서 탐방지를 고르세요."""
 
 PRIMARY_RETRY_SYSTEM = """JSON만 출력. 다른 텍스트 금지.
-필수 키: recommended_site, nearby_area, reason, learning_goals(배열), field_missions(배열).
-도착지 일대 탐방지를 추천하세요."""
+필수 키: recommended_site, nearby_area, reason, learning_goals(배열), field_missions(배열), timeline(배열, 각 항목에 time·place·activity).
+도착지 일대 탐방지와 시간대별 코스를 추천하세요."""
 
 REPORT_SYSTEM = """통일교육용 탐방 보고서를 한국어 마크다운으로 작성하세요.
 주어진 JSON(primary, places, origin, destination)만 근거로 쓰세요. 없는 사실 만들지 마세요.
-구성: 제목, 출발→도착 요약, 추천 이유, 학습 목표, 현장 미션, 주변 장소(있으면)."""
+구성: 제목, 출발→도착 요약, 시간대별 탐방 코스(timeline을 표나 목록으로), 추천 이유, 학습 목표, 현장 미션, 주변 장소(있으면)."""
 
 
 def _user_prompt(date: str, origin: str, destination: str, schedule: str, audience: str) -> str:
     return (
         f"날짜: {date}\n출발지: {origin}\n도착지: {destination}\n"
         f"일정: {schedule}\n대상: {audience}\n"
-        "도착지 일대에서 통일교육 탐방지를 JSON으로 추천하세요."
+        "도착지 일대에서 통일교육 탐방지와 시간대별 코스를 JSON으로 추천하세요."
     )
 
 

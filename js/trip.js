@@ -82,6 +82,26 @@
     appendList(fragment, '학습 목표', primary.learning_goals);
     appendList(fragment, '현장 미션', primary.field_missions);
 
+    var timeline = primary.timeline || [];
+    if (timeline.length) {
+      appendHeading(fragment, '시간대별 탐방 코스');
+      var tl = document.createElement('ol');
+      tl.className = 'trip-timeline';
+      timeline.forEach(function (slot) {
+        var li = document.createElement('li');
+        var time = slot.time || '';
+        var place = slot.place || '';
+        var activity = slot.activity || '';
+        var parts = [];
+        if (time) parts.push(time);
+        if (place) parts.push(place);
+        if (activity) parts.push(activity);
+        li.textContent = parts.join(' · ');
+        tl.appendChild(li);
+      });
+      fragment.appendChild(tl);
+    }
+
     var places = data.places || [];
     if (places.length) {
       appendHeading(fragment, '주변 장소');
@@ -168,8 +188,15 @@
         renderResult(result);
         if (window.TongilHistory) {
           var site = (result.primary && result.primary.recommended_site) || '';
+          var tl = (result.primary && result.primary.timeline) || [];
+          var tlPreview = tl
+            .slice(0, 4)
+            .map(function (s) {
+              return [s.time, s.place || s.activity].filter(Boolean).join(' ');
+            })
+            .join(' → ');
           var summary = site
-            ? '추천: ' + site
+            ? '추천: ' + site + (tlPreview ? ' | 코스: ' + tlPreview : '')
             : (result.report_markdown || '').slice(0, 200);
           window.TongilHistory.add(
             'trip',
