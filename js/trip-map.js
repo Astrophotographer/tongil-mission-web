@@ -10,11 +10,18 @@
     overlays = [];
   }
 
+  function setNote(note, text) {
+    if (!note) return;
+    note.hidden = !text;
+    note.textContent = text || '';
+  }
+
   function loadSdk(appKey) {
-    if (window.kakao && window.kakao.maps) {
+    if (window.kakao && window.kakao.maps && window.kakao.maps.LatLng) {
       return Promise.resolve();
     }
     if (sdkPromise) return sdkPromise;
+
     sdkPromise = new Promise(function (resolve, reject) {
       var script = document.createElement('script');
       script.src =
@@ -23,19 +30,32 @@
         '&autoload=false';
       script.async = true;
       script.onload = function () {
-        if (!window.kakao || !window.kakao.maps) {
-          reject(new Error('kakao maps missing'));
+        if (!window.kakao || !window.kakao.maps || !window.kakao.maps.load) {
+          reject(new Error('kakao maps missing after script load'));
           return;
         }
         window.kakao.maps.load(function () {
+          if (!window.kakao.maps.LatLng) {
+            reject(new Error('kakao maps modules not ready'));
+            return;
+          }
           resolve();
         });
       };
       script.onerror = function () {
-        reject(new Error('kakao sdk load failed'));
+        reject(
+          new Error(
+            'sdk script blocked — Kakao Developers에서 JavaScript 키 사이트 도메인에 현재 주소를 등록했는지 확인하세요'
+          )
+        );
       };
       document.head.appendChild(script);
+    }).catch(function (err) {
+      // allow retry on next recommend
+      sdkPromise = null;
+      throw err;
     });
+
     return sdkPromise;
   }
 
@@ -79,10 +99,7 @@
 
     if (!route || !route.origin || !route.destination) {
       container.hidden = true;
-      if (note) {
-        note.hidden = false;
-        note.textContent = '지도에 표시할 출발/도착 좌표가 없습니다.';
-      }
+      setNote(note, '지도에 표시할 출발/도착 좌표가 없습니다.');
       return;
     }
 
@@ -90,13 +107,15 @@
       .then(function (appKey) {
         if (!appKey) {
           container.hidden = true;
-          if (note) {
-            note.hidden = false;
-            note.textContent =
-              '지도 표시를 위해 Vercel에 KAKAO_JS_KEY(카카오 JavaScript 키)를 설정하세요. 아래 카카오맵 링크로도 경로를 열 수 있습니다.';
-          }
+          setNote(
+            note,
+            '지도 표시를 위해 Vercel에 KAKAO_JS_KEY를 설정하세요. 아래 링크로도 경로를 열 수 있습니다.'
+          );
           return null;
         }
+        // unhide before Map() so Kakao can measure size
+        container.hidden = false;
+        setNote(note, '지도를 불러오는 중…');
         return loadSdk(appKey).then(function () {
           return appKey;
         });
@@ -104,15 +123,16 @@
       .then(function (appKey) {
         if (!appKey) return;
         var kakaoMaps = window.kakao.maps;
-        container.hidden = false;
-        if (note) note.hidden = true;
-
         var center = new kakaoMaps.LatLng(route.destination.lat, route.destination.lng);
+
         if (!map) {
           map = new kakaoMaps.Map(container, { center: center, level: 8 });
         } else {
           map.setCenter(center);
         }
+        // after was-hidden containers
+        if (map.relayout) map.relayout();
+
         clearOverlays();
 
         var bounds = new kakaoMaps.LatLngBounds();
@@ -157,13 +177,17 @@
         polyline.setMap(map);
         overlays.push(polyline);
         map.setBounds(bounds);
+        if (map.relayout) map.relayout();
+        setNote(note, '');
       })
-      .catch(function () {
+      .catch(function (err) {
         container.hidden = true;
-        if (note) {
-          note.hidden = false;
-          note.textContent = '카카오 지도를 불러오지 못했습니다. 링크를 이용해 주세요.';
-        }
+        var detail = err && err.message ? String(err.message) : '';
+        var tip =
+          '카카오 지도를 불러오지 못했습니다. Kakao Developers → 앱 → 플랫폼(Web)에 ' +
+          'https://tongil-mission-web.vercel.app 도메인을 등록했는지 확인하세요. 아래 링크로도 경로를 열 수 있습니다.';
+        if (detail) tip += ' (' + detail + ')';
+        setNote(note, tip);
       });
   }
 
@@ -195,10 +219,7 @@
       var container = document.getElementById('trip-map');
       var note = document.getElementById('trip-map-note');
       if (container) container.hidden = true;
-      if (note) {
-        note.hidden = true;
-        note.textContent = '';
-      }
+      setNote(note, '');
     },
   };
 })();
