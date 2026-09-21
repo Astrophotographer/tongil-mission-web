@@ -13,15 +13,28 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2.1,
       "position": [
-        260,
+        200,
         300
       ],
       "webhookId": "tongil-mission-save"
     },
     {
       "parameters": {
+        "jsCode": "const raw = $input.first().json;\nconst b = (raw.body && typeof raw.body === 'object') ? raw.body : raw;\nreturn [{\n  json: {\n    recorded_at_kr: b.recorded_at_kr || '',\n    kind_label: b.kind_label || '',\n    kind: b.kind || '',\n    input: String(b.input || ''),\n    summary: String(b.summary || ''),\n    source: b.source || 'tongil-mission-web',\n  }\n}];"
+      },
+      "id": "flatten",
+      "name": "Flatten",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        420,
+        300
+      ]
+    },
+    {
+      "parameters": {
         "method": "POST",
-        "url": "=https://sheets.googleapis.com/v4/spreadsheets/1rDj4q5y8z5rS1UO6TH7huiSfVWcW-JTFMmA3fC82D9Q/values/%EA%B8%B0%EB%A1%9D!A:F:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS",
+        "url": "https://sheets.googleapis.com/v4/spreadsheets/1rDj4q5y8z5rS1UO6TH7huiSfVWcW-JTFMmA3fC82D9Q/values/%EA%B8%B0%EB%A1%9D!A:F:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS",
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "googleSheetsOAuth2Api",
         "sendBody": true,
@@ -34,7 +47,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        520,
+        640,
         300
       ],
       "credentials": {
@@ -47,6 +60,17 @@
   ],
   "connections": {
     "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Flatten",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Flatten": {
       "main": [
         [
           {
